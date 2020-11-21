@@ -73,6 +73,7 @@ public class projectSpace extends Applet {
         
     }
     public void init(){
+        //canvas
         GraphicsConfiguration gc = SimpleUniverse.getPreferredConfiguration();
         Canvas3D cv = new Canvas3D(gc);
         setLayout(new BorderLayout());
@@ -85,14 +86,15 @@ public class projectSpace extends Applet {
     }
     private BranchGroup createSceneGraph(){
         BranchGroup root = new BranchGroup();
-        Appearance ap = createAppearance();
+       // Appearance ap = createAppearance();
         //ap.setMaterial(new Material());
         TransformGroup tgSolar = new TransformGroup();  
         root.addChild(tgSolar);
         
         //image for planets
-        ImageComponent2D image = new ImageComponent2D(); //suppose to import a picture of space
-        Background background = new Background();//the background for the project
+//        ImageComponent2D image0 = new ImageComponent2D(); //suppose to import a picture of space
+//        Background background = new Background();//the background for the project
+//        background.setImage(image0);
         
         //spheres of the planets
         Sphere sun = new Sphere();
@@ -128,18 +130,18 @@ public class projectSpace extends Applet {
         tr.setTranslation(new Vector3f(-.2f,.15f,.15f));        
         TransformGroup tgMercury = new TransformGroup(tr);//-.2f,.15f,.15f
         TransformGroup tgMercuryRotat =createRotationTransformGroup(mercuryRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgMercury);
+        tgSolar.addChild(tgMercuryRotat);//review this. should it be tgMercury
+        tgMercuryRotat.addChild(tgMercury);// should rotat be after tgmercury
         tgMercury.addChild(mercury);
-        tgMercuryRotat.addChild(tgMercury);
         
         tr.setScale(.4);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(-.3f,.35f,.2f));
         TransformGroup tgVenus = new TransformGroup(tr); //-.3f,.35f,.2f
         TransformGroup tgVenusRotat =createRotationTransformGroup(venusRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgVenus);
-        tgVenus.addChild(venus);
+        tgSolar.addChild(tgVenusRotat);
         tgVenusRotat.addChild(tgVenus);
+        tgVenus.addChild(venus);
         
         TransformGroup tgMoon = new TransformGroup(tr);
         
@@ -148,54 +150,56 @@ public class projectSpace extends Applet {
         tr.setTranslation(new Vector3f(.45f,.57f,.45f));
         TransformGroup tgEarth = new TransformGroup(tr); //.45f,.57f,.45f
         TransformGroup tgEarthRotat =createRotationTransformGroup(earthRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgEarth);
-        tgEarth.addChild(earth);
+        tgSolar.addChild(tgEarthRotat);
         tgEarthRotat.addChild(tgEarth);
+        tgEarth.addChild(earth);
+        
         
         tr.setScale(.3);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(.55f,.4f,.6f));
         TransformGroup tgMars = new TransformGroup(tr);//.55f,.4f,.6f
         TransformGroup tgMarsRotat =createRotationTransformGroup(marsRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgMars);
-        tgMars.addChild(mars);
+        tgSolar.addChild(tgMarsRotat);
         tgMarsRotat.addChild(tgMars);
+        tgMars.addChild(mars);
         
         tr.setScale(1.3);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(.8f,-.8f,-.45f));
         TransformGroup tgJupiter = new TransformGroup(tr); //.8f,-.8f,-.45f
         TransformGroup tgJupRotat =createRotationTransformGroup(jupiterRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgJupiter);
-        tgJupiter.addChild(jupiter);
+        tgSolar.addChild(tgJupRotat);
         tgJupRotat.addChild(tgJupiter);
+        tgJupiter.addChild(jupiter);
+        
 
         tr.setScale(1.2);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(0.89f,-0.9f,-0.45f));
         TransformGroup tgSaturn = new TransformGroup(tr); //.89f,-.9f,.-45f
         TransformGroup tgSatRotat =createRotationTransformGroup(saturnRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgSaturn);
-        tgSaturn.addChild(saturn);
+        tgSolar.addChild(tgSatRotat);
         tgSatRotat.addChild(tgSaturn);
+        tgSaturn.addChild(saturn);
         
         tr.setScale(1.1);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(1.5f,1f,1f));        
         TransformGroup tgUranus = new TransformGroup(tr);//1.5f,1f,1f
         TransformGroup tgUranRotat =createRotationTransformGroup(uranusRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgUranus);
-        tgUranus.addChild(uranus);
+        tgSolar.addChild(tgUranRotat);
         tgUranRotat.addChild(tgUranus);
+        tgUranus.addChild(uranus);
 
         tr.setScale(1.);
         tr.setIdentity();
         tr.setTranslation(new Vector3f(01f,0f,0f));        
         TransformGroup tgNeptune = new TransformGroup(tr);//1f,0f,0f
         TransformGroup tgNepRotat =createRotationTransformGroup(neptuneRotationTimeMs, true);//rotation
-        tgSolar.addChild(tgNeptune);
-        tgNeptune.addChild(neptune);
+        tgSolar.addChild(tgNepRotat);
         tgNepRotat.addChild(tgNeptune);
+        tgNeptune.addChild(neptune);
         
         tr.setScale(.2);
         tr.setIdentity();
@@ -205,17 +209,21 @@ public class projectSpace extends Applet {
         tgPluto.addChild(pluto);
         
         //light for the sun
-        PointLight light = new PointLight(new Color3f(Color.orange),new Point3f(0f,0f,0f),new Point3f(1f,0.1f,0f));//please check over this
         BoundingSphere bounds = new BoundingSphere();
+         Background background = new Background(1.0f, 1.0f, 1.0f);
+         background.setApplicationBounds(bounds);
+        root.addChild(background);
+
+        PointLight light = new PointLight(new Color3f(Color.orange),new Point3f(0f,0f,0f),new Point3f(1f,0.1f,0f));//please check over this
         light.setInfluencingBounds(bounds);
         root.addChild(light);
         
-        root.addChild(tgSolar);
+        //root.addChild(tgSolar);
         return root;
     }
     
     
-    Appearance createAppearance(){
+/*    Appearance createAppearance(){
         Appearance ap = new Appearance();
         URL filename = getClass().getClassLoader().getResource("C:\\Users\\metal\\OneDrive\\Documents\\NetBeansProjects\\Graphic3D\\src\\graphic3d\\pictures\\mercury.jpg");
         TextureLoader loadPlanet = new TextureLoader(filename, this);
@@ -248,7 +256,7 @@ public class projectSpace extends Applet {
         filename = getClass().getClassLoader().getResource("C:\\Users\\metal\\OneDrive\\Documents\\NetBeansProjects\\Graphic3D\\src\\graphic3d\\pictures\\neptune.jpg");
         loadPlanet = new TextureLoader(filename, this);
         ImageComponent2D image8 = loadPlanet.getImage();//neptune
-    }
+    }*/
     
     
     
