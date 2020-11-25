@@ -329,6 +329,46 @@ public class ProjectSpace extends Applet {
         //Planet Textures
         plutoApp.setMaterial(planetMaterial);
 
+        
+                //Pluto Texture
+        Appearance saturnRingApp = new Appearance();
+        URL filenamesaturnRing = getClass().getClassLoader().getResource("images/saturn ring.jpg");
+        TextureLoader loadsaturnRing = new TextureLoader(filenamesaturnRing, this);
+        ImageComponent2D saturnRingImage = loadsaturnRing.getImage();
+        if(saturnRingImage == null){
+            System.out.print("Cant find");
+        }
+        Texture2D saturnRingTexture= new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, saturnRingImage.getWidth(),
+                saturnRingImage.getHeight());
+        saturnRingTexture.setImage(0, saturnRingImage);
+        saturnRingTexture.setEnable(true);
+        saturnRingApp.setTexture(saturnRingTexture);
+        //Pluto Texture Attributes
+        TextureAttributes saturnRingTexAttr = new TextureAttributes();
+        saturnRingTexAttr.setTextureMode(TextureAttributes.MODULATE);
+        saturnRingApp.setTextureAttributes(saturnRingTexAttr);
+        //Planet Textures
+        saturnRingApp.setMaterial(planetMaterial);
+        
+                        //Pluto Texture
+        Appearance neptuneRingApp = new Appearance();
+        URL filenameneptuneRing = getClass().getClassLoader().getResource("images/neptuneRing.jpg");
+        TextureLoader loadNeptuneRing = new TextureLoader(filenameneptuneRing, this);
+        ImageComponent2D neptuneRingImage = loadNeptuneRing.getImage();
+        if(neptuneRingImage == null){
+            System.out.print("Cant find");
+        }
+        Texture2D neptuneRingTexture= new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, neptuneRingImage.getWidth(),
+                neptuneRingImage.getHeight());
+        neptuneRingTexture.setImage(0, neptuneRingImage);
+        neptuneRingTexture.setEnable(true);
+        neptuneRingApp.setTexture(neptuneRingTexture);
+        //Pluto Texture Attributes
+        TextureAttributes neptuneRingTexAttr = new TextureAttributes();
+        neptuneRingTexAttr.setTextureMode(TextureAttributes.MODULATE);
+        neptuneRingApp.setTextureAttributes(neptuneRingTexAttr);
+        //Planet Textures
+        neptuneRingApp.setMaterial(planetMaterial);
 
         //spheres of the planets
         Sphere sun = new Sphere(75f, primflags, 100);
@@ -342,6 +382,13 @@ public class ProjectSpace extends Applet {
         Sphere uranus = new Sphere(6f, primflags,100, uranusApp);
         Sphere neptune = new Sphere(5.8f, primflags,100, neptuneApp);
         Sphere pluto = new Sphere(.5f, primflags,100, plutoApp);
+        Shape3D saturnRing = new Torus(12, 15);
+        Shape3D neptuneRing = new Torus(5, 8);
+        
+        saturn.addChild(saturnRing);
+        saturnRing.setAppearance(saturnRingApp);
+        neptune.addChild(neptuneRing);
+        neptuneRing.setAppearance(neptuneRingApp);
 
         //Sun Material
         Material sunMaterial = new Material();
@@ -378,9 +425,9 @@ public class ProjectSpace extends Applet {
         TransformGroup tgSunRotat =createRotationTransformGroup(sunRotationTimeMs);//rotation
         //TransformGroup tgSunOrbit = createOrbitTransformGroup(sunOrbitTimesMs);
         tgSun.addChild(sun);
-        tgSunRotat.addChild(tgSun);
+        //tgSunRotat.addChild(tgSun);
         //tgSunOrbit.addChild(tgSunRotat);
-        root.addChild(tgSunRotat);
+        //root.addChild(tgSunRotat);
 
         //Jupiter
         //tr.setTranslation(new Vector3f(140f,0f,0f)); //distance to center
@@ -393,6 +440,7 @@ public class ProjectSpace extends Applet {
         tgJupiterDist.addChild(tgJupiterRotate);
         tgJupiterOrbit.addChild(tgJupiterDist);
         root.addChild(tgJupiterOrbit);
+        
 
         //Mercury
         //tr.setTranslation(new Vector3f(75f,0f,0f)); //distance to center
@@ -499,11 +547,11 @@ public class ProjectSpace extends Applet {
         tgPlutoDist.addChild(tgPlutoRotat);
         tgPlutoOrbit.addChild(tgPlutoDist);
         root.addChild(tgPlutoOrbit);
-
+        
 
         //light for the sun
         BoundingSphere bounds = new BoundingSphere(new Point3d(0,0,0),Double.MAX_VALUE);
-        Background background = new Background(0.0f, 0.0f, 0.0f);
+        Background background = new Background(1.0f, 1.0f, 1.0f);
         background.setApplicationBounds(bounds);
         root.addChild(background);
 
