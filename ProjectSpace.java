@@ -24,51 +24,49 @@ import java.net.URL;
  */
 public class ProjectSpace extends Applet {
     private static boolean forward;
-    int orbitTimeMs = 4000;
-    int rotationTimeMs = 1500;
 
     int moonRotationTimeMs = 5000;
     int moonOrbitTimeMs = 10000;
+    int moonDistanceFromCenter = 5;
 
     int mercuryRotationTimeMs = 6000;
     int mercuryOrbitTimeMs = 10000;
-    int mercuryDistanceFromCenter = 75;
+    int mercuryDistanceFromCenter = 175;
 
     int venusRotationTimeMs = 6000;
     int venusOrbitTimeMs = 12000;
-    int venusDistanceFromCenter = 85;
+    int venusDistanceFromCenter = 185;
 
     int earthRotationTimeMs = 6000;
     int earthOrbitTimeMs = 15000;
-    int earthDistanceFromCenter = 95;
+    int earthDistanceFromCenter = 195;
 
     int marsRotationTimeMs = 6000;
     int marsOrbitTimeMs = 18000;
-    int marsDistanceFromCenter = 105;
+    int marsDistanceFromCenter = 205;
 
     int jupiterRotationTimeMs = 5000;
     int jupiterOrbitTimeMs = 22000;
-    int jupiterDistanceFromCenter = 140;
+    int jupiterDistanceFromCenter = 240;
 
     int saturnRotationTimeMs = 6000;
     int saturnOrbitTimeMs = 25000;
-    int saturnDistanceFromCenter = 195;
-    //saturn distance is 195
+    int saturnDistanceFromCenter = 295;
 
     int uranusRotationTimeMs = 6000;
     int uranusOrbitTimeMs = 28000;
-    int uranusDistanceFromCenter = 230;
+    int uranusDistanceFromCenter = 330;
 
     int neptuneRotationTimeMs = 6000;
     int neptuneOrbitTimeMs = 31000;
-    int neptuneDistanceFromCenter = 250;
+    int neptuneDistanceFromCenter = 350;
 
     int plutoRotationTimeMs = 6000;
     int plutoOrbitTimesMs = 33000;
-    int plutoDistanceFromCenter = 265;
+    int plutoDistanceFromCenter = 365;
 
     int sunRotationTimeMs = 10000;
-    //int sunOrbitTimesMs = 1000;
+
 
 
     private static BoundingSphere boundingSphere = new BoundingSphere(new Point3d(0.0,0.0,0.0), Double.MAX_VALUE);
@@ -76,7 +74,6 @@ public class ProjectSpace extends Applet {
 
     public static void main(String[] args){
         new MainFrame(new ProjectSpace(), 1000,760);
-
 
     }
     public void init(){
@@ -91,7 +88,7 @@ public class ProjectSpace extends Applet {
         su.getViewingPlatform().setNominalViewingTransform();
         su.addBranchGraph(bg);
 
-
+        //Key navigtor
         viewtrans = su.getViewingPlatform().getViewPlatformTransform();
         KeyNavigatorBehavior keyNavBeh = new KeyNavigatorBehavior(viewtrans);
         keyNavBeh.setSchedulingBounds(boundingSphere);
@@ -99,7 +96,6 @@ public class ProjectSpace extends Applet {
         platformGeom.addChild(keyNavBeh);
 
         su.getViewingPlatform().setPlatformGeometry(platformGeom);
-
 
         // su.addBranchGraph(bg);
         Transform3D viewPlatformTransform = new Transform3D();
@@ -109,23 +105,18 @@ public class ProjectSpace extends Applet {
         t1.rotX(Math.toRadians(-15));
         viewPlatformTransform.mul(t1, t0);
         su.getViewer().getView().setBackClipDistance(1000);
-        su.getViewingPlatform().
-                getViewPlatformTransform().setTransform(viewPlatformTransform);;
+        su.getViewingPlatform().getViewPlatformTransform().setTransform(viewPlatformTransform);;
     }
 
     private BranchGroup createSceneGraph(){
         BranchGroup root = new BranchGroup();
-        // Appearance ap = createAppearance();
-        //ap.setMaterial(new Material());
-       /* TransformGroup tgSolar = new TransformGroup();
-        root.addChild(tgSolar);*/
 
         //image for planets
 //        ImageComponent2D image0 = new ImageComponent2D(); //suppose to import a picture of space
 //        Background background = new Background();//the background for the project
 //        background.setImage(image0);
 
-        int primflags = Primitive.GENERATE_NORMALS + Primitive.GENERATE_TEXTURE_COORDS;
+        int primFlags = Primitive.GENERATE_NORMALS + Primitive.GENERATE_TEXTURE_COORDS;
 
         //Mercury Texture
         Appearance mercuryApp = new Appearance();
@@ -329,11 +320,11 @@ public class ProjectSpace extends Applet {
         //Planet Textures
         plutoApp.setMaterial(planetMaterial);
 
-        
-                //Pluto Texture
+
+        //Saturn Ring Texture
         Appearance saturnRingApp = new Appearance();
-        URL filenamesaturnRing = getClass().getClassLoader().getResource("images/saturn ring.jpg");
-        TextureLoader loadsaturnRing = new TextureLoader(filenamesaturnRing, this);
+        URL fileNameSaturnRing = getClass().getClassLoader().getResource("images/saturn ring.jpg");
+        TextureLoader loadsaturnRing = new TextureLoader(fileNameSaturnRing, this);
         ImageComponent2D saturnRingImage = loadsaturnRing.getImage();
         if(saturnRingImage == null){
             System.out.print("Cant find");
@@ -349,11 +340,11 @@ public class ProjectSpace extends Applet {
         saturnRingApp.setTextureAttributes(saturnRingTexAttr);
         //Planet Textures
         saturnRingApp.setMaterial(planetMaterial);
-        
-                        //Pluto Texture
+
+        //Neptune Ring Texture
         Appearance neptuneRingApp = new Appearance();
-        URL filenameneptuneRing = getClass().getClassLoader().getResource("images/neptuneRing.jpg");
-        TextureLoader loadNeptuneRing = new TextureLoader(filenameneptuneRing, this);
+        URL fileNameNeptuneRing = getClass().getClassLoader().getResource("images/neptune ring.jpg");
+        TextureLoader loadNeptuneRing = new TextureLoader(fileNameNeptuneRing, this);
         ImageComponent2D neptuneRingImage = loadNeptuneRing.getImage();
         if(neptuneRingImage == null){
             System.out.print("Cant find");
@@ -371,20 +362,20 @@ public class ProjectSpace extends Applet {
         neptuneRingApp.setMaterial(planetMaterial);
 
         //spheres of the planets
-        Sphere sun = new Sphere(75f, primflags, 100);
-        Sphere mercury = new Sphere(.5f, primflags,100, mercuryApp);
-        Sphere venus = new Sphere(1.2f, primflags,100, venusApp);
-        Sphere earth = new Sphere(1.5f, primflags,100, earthApp);
-        Sphere moon = new Sphere(.375f,primflags,100, moonApp);
-        Sphere mars = new Sphere(.75f, primflags,100, marsApp);
-        Sphere jupiter = new Sphere(16.5f, primflags,100,jupiterApp);
-        Sphere saturn = new Sphere(13.5f, primflags,100, saturnApp);
-        Sphere uranus = new Sphere(6f, primflags,100, uranusApp);
-        Sphere neptune = new Sphere(5.8f, primflags,100, neptuneApp);
-        Sphere pluto = new Sphere(.5f, primflags,100, plutoApp);
+        Sphere sun = new Sphere(163f,primFlags, 100);
+        Sphere mercury = new Sphere(.5f, primFlags,100, mercuryApp);
+        Sphere venus = new Sphere(1.2f, primFlags,100, venusApp);
+        Sphere earth = new Sphere(1.5f, primFlags,100, earthApp);
+        Sphere moon = new Sphere(.375f,primFlags,100, moonApp);
+        Sphere mars = new Sphere(.75f, primFlags,100, marsApp);
+        Sphere jupiter = new Sphere(16.5f, primFlags,100,jupiterApp);
+        Sphere saturn = new Sphere(13.5f, primFlags,100, saturnApp);
+        Sphere uranus = new Sphere(6f, primFlags,100, uranusApp);
+        Sphere neptune = new Sphere(5.8f, primFlags,100, neptuneApp);
+        Sphere pluto = new Sphere(.5f, primFlags,100, plutoApp);
         Shape3D saturnRing = new Torus(12, 15);
         Shape3D neptuneRing = new Torus(5, 8);
-        
+
         saturn.addChild(saturnRing);
         saturnRing.setAppearance(saturnRingApp);
         neptune.addChild(neptuneRing);
@@ -399,51 +390,22 @@ public class ProjectSpace extends Applet {
         sun.setAppearance(sunApp);
 
         //Moon Material
-        /*Material moonMaterial = new Material();
+        Material moonMaterial = new Material();
         moonMaterial.setEmissiveColor(new Color3f(1.0f, 1.0f, 1.0f));
-        Appearance moonApp = new Appearance();
         moonApp.setMaterial(moonMaterial);
-        moon.setAppearance(moonApp);*/
-
-        /*mercury.setAppearance(app);
-        venus.setAppearance(app);
-        earth.setAppearance(app);
-        mars.setAppearance(app);
-        jupiter.setAppearance(app);
-        saturn.setAppearance(app);
-        uranus.setAppearance(app);
-        neptune.setAppearance(app);
-        pluto.setAppearance(app);
-        moon.setAppearance(app);*/
-        //jupiter.setAppearance(earthApp);
+        moon.setAppearance(moonApp);
 
         Transform3D tr = new Transform3D();
 
         //Sun
         tr.setTranslation(new Vector3f(0,0f,0f)); //distance to center
         TransformGroup tgSun = new TransformGroup(tr);//-.2f,.15f,.15f
-        TransformGroup tgSunRotat =createRotationTransformGroup(sunRotationTimeMs);//rotation
-        //TransformGroup tgSunOrbit = createOrbitTransformGroup(sunOrbitTimesMs);
+        TransformGroup tgSunRotat = createRotationTransformGroup(sunRotationTimeMs);//rotation
         tgSun.addChild(sun);
-        //tgSunRotat.addChild(tgSun);
-        //tgSunOrbit.addChild(tgSunRotat);
-        //root.addChild(tgSunRotat);
-
-        //Jupiter
-        //tr.setTranslation(new Vector3f(140f,0f,0f)); //distance to center
-        TransformGroup tgJupiter = new TransformGroup();//-.2f,.15f,.15f
-        TransformGroup tgJupiterRotate =createRotationTransformGroup(jupiterRotationTimeMs);//rotation
-        TransformGroup tgJupiterDist = createTranslatingTransformGroup(jupiterDistanceFromCenter);
-        TransformGroup tgJupiterOrbit = createOrbitTransformGroup(jupiterOrbitTimeMs);
-        tgJupiter.addChild(jupiter);
-        tgJupiterRotate.addChild(tgJupiter);
-        tgJupiterDist.addChild(tgJupiterRotate);
-        tgJupiterOrbit.addChild(tgJupiterDist);
-        root.addChild(tgJupiterOrbit);
-        
+        tgSunRotat.addChild(tgSun);
+        root.addChild(tgSunRotat);
 
         //Mercury
-        //tr.setTranslation(new Vector3f(75f,0f,0f)); //distance to center
         TransformGroup tgMercury = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgMercuryRotate =createRotationTransformGroup(mercuryRotationTimeMs);//rotation
         TransformGroup tgMercuryDist = createTranslatingTransformGroup(mercuryDistanceFromCenter);
@@ -455,7 +417,6 @@ public class ProjectSpace extends Applet {
         root.addChild(tgMercuryOrbit);
 
         //Venus
-        //tr.setTranslation(new Vector3f(85f,0f,0f)); //distance to center
         TransformGroup tgVenus = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgVenusRotate =createRotationTransformGroup(venusRotationTimeMs);//rotation
         TransformGroup tgVenusDist = createTranslatingTransformGroup(venusDistanceFromCenter);
@@ -467,7 +428,6 @@ public class ProjectSpace extends Applet {
         root.addChild(tgVenusOrbit);
 
         //Earth
-        //tr.setTranslation(new Vector3f(95f,0f,0f)); //distance to center
         TransformGroup tgEarth = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgEarthRotate =createRotationTransformGroup(earthRotationTimeMs);//rotation
         TransformGroup tgEarthDist = createTranslatingTransformGroup(earthDistanceFromCenter);
@@ -500,8 +460,18 @@ public class ProjectSpace extends Applet {
         tgMarsOrbit.addChild(tgMarsDist);
         root.addChild(tgMarsOrbit);
 
+        //Jupiter
+        TransformGroup tgJupiter = new TransformGroup();//-.2f,.15f,.15f
+        TransformGroup tgJupiterRotate =createRotationTransformGroup(jupiterRotationTimeMs);//rotation
+        TransformGroup tgJupiterDist = createTranslatingTransformGroup(jupiterDistanceFromCenter);
+        TransformGroup tgJupiterOrbit = createOrbitTransformGroup(jupiterOrbitTimeMs);
+        tgJupiter.addChild(jupiter);
+        tgJupiterRotate.addChild(tgJupiter);
+        tgJupiterDist.addChild(tgJupiterRotate);
+        tgJupiterOrbit.addChild(tgJupiterDist);
+        root.addChild(tgJupiterOrbit);
+
         //Saturn
-        //tr.setTranslation(new Vector3f(195f,0f,0f)); //distance to center
         TransformGroup tgSaturn = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgSaturnRotate =createRotationTransformGroup(saturnRotationTimeMs);//rotation
         TransformGroup tgSaturnDist =createTranslatingTransformGroup( saturnDistanceFromCenter);//rotation
@@ -513,7 +483,6 @@ public class ProjectSpace extends Applet {
         root.addChild(tgSaturnOrbit);
 
         //Uranus
-        //tr.setTranslation(new Vector3f(230f,0f,0f)); //distance to center
         TransformGroup tgUranus = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgUranusRotate =createRotationTransformGroup(uranusRotationTimeMs);//rotation
         TransformGroup tgUranusDist =createTranslatingTransformGroup(uranusDistanceFromCenter);//rotation
@@ -525,7 +494,6 @@ public class ProjectSpace extends Applet {
         root.addChild(tgUranusOrbit);
 
         //Neptune
-        //tr.setTranslation(new Vector3f(250f,0f,0f)); //distance to center
         TransformGroup tgNeptune = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgNeptuneRotate =createRotationTransformGroup(neptuneRotationTimeMs);//rotation
         TransformGroup tgNeptuneDist =createTranslatingTransformGroup(neptuneDistanceFromCenter);//rotation
@@ -537,7 +505,6 @@ public class ProjectSpace extends Applet {
         root.addChild(tgNeptuneOrbit);
 
         //Pluto
-        //tr.setTranslation(new Vector3f(265,0f,0f)); //distance to center
         TransformGroup tgPluto = new TransformGroup();//-.2f,.15f,.15f
         TransformGroup tgPlutoRotat =createRotationTransformGroup(plutoRotationTimeMs);//rotation
         TransformGroup tgPlutoDist =createTranslatingTransformGroup(plutoDistanceFromCenter);//rotation
@@ -547,11 +514,10 @@ public class ProjectSpace extends Applet {
         tgPlutoDist.addChild(tgPlutoRotat);
         tgPlutoOrbit.addChild(tgPlutoDist);
         root.addChild(tgPlutoOrbit);
-        
 
         //light for the sun
         BoundingSphere bounds = new BoundingSphere(new Point3d(0,0,0),Double.MAX_VALUE);
-        Background background = new Background(1.0f, 1.0f, 1.0f);
+        Background background = createBackGround();
         background.setApplicationBounds(bounds);
         root.addChild(background);
 
@@ -604,5 +570,23 @@ public class ProjectSpace extends Applet {
         orbitInterpolator.setSchedulingBounds(boundingSphere);
         orbitTransformGroup.addChild(orbitInterpolator);
         return orbitTransformGroup;
+    }
+
+    Background createBackGround(){
+        Background background = new Background();
+        BranchGroup bg = new BranchGroup();
+        Sphere sphere = new Sphere(.5f, Sphere.GENERATE_NORMALS |
+                Sphere.GENERATE_NORMALS_INWARD |
+                Sphere.GENERATE_TEXTURE_COORDS, 100);
+        Appearance ap = sphere.getAppearance();
+        bg.addChild(sphere);
+        background.setGeometry(bg);
+
+        URL filename =
+                getClass().getClassLoader().getResource("images/space.jpg");
+        TextureLoader loader = new TextureLoader(filename, this);
+        Texture texture = loader.getTexture();
+        ap.setTexture(texture);
+        return background;
     }
 }
