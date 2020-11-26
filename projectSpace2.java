@@ -1,39 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package graphic3d;
 
+
+import com.sun.j3d.utils.applet.MainFrame;
+import com.sun.j3d.utils.behaviors.keyboard.KeyNavigatorBehavior;
+import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
+import com.sun.j3d.utils.behaviors.mouse.MouseTranslate;
+import com.sun.j3d.utils.behaviors.mouse.MouseZoom;
+import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
+import com.sun.j3d.utils.universe.PlatformGeometry;
 import com.sun.j3d.utils.universe.SimpleUniverse;
-import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GraphicsConfiguration;
-import java.net.URL;
-import javax.media.j3d.Appearance;
-import javax.media.j3d.Background;
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.BranchGroup;
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.ImageComponent2D;
-import javax.media.j3d.Material;
-import javax.media.j3d.PointLight;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
+import com.sun.j3d.utils.universe.ViewingPlatform;
+
+import javax.media.j3d.*;
 import javax.vecmath.Color3f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-import com.sun.j3d.utils.image.*;
-import com.sun.j3d.utils.geometry.*;
-import static java.awt.PageAttributes.ColorType.COLOR;
-import javafx.geometry.Point3D;
-import javax.media.j3d.Alpha;
-import javax.media.j3d.RotationInterpolator;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
+import java.applet.Applet;
+import java.awt.*;
+import java.net.URL;
 
 
 /**
@@ -347,6 +335,46 @@ public class ProjectSpace extends Applet {
         //Planet Textures
         plutoApp.setMaterial(planetMaterial);
 
+        
+                //Pluto Texture
+        Appearance saturnRingApp = new Appearance();
+        URL filenameSaturnRing = getClass().getClassLoader().getResource("images/saturn ring.jpg");
+        TextureLoader loadSaturnRing = new TextureLoader(filenameSaturnRing, this);
+        ImageComponent2D saturnRingImage = loadSaturnRing.getImage();
+        if(saturnRingImage == null){
+            System.out.print("Cant find");
+        }
+        Texture2D saturnRingTexture= new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, saturnRingImage.getWidth(),
+                saturnRingImage.getHeight());
+        saturnRingTexture.setImage(0, saturnRingImage);
+        saturnRingTexture.setEnable(true);
+        saturnRingApp.setTexture(saturnRingTexture);
+        //Pluto Texture Attributes
+        TextureAttributes saturnRingTexAttr = new TextureAttributes();
+        saturnRingTexAttr.setTextureMode(TextureAttributes.MODULATE);
+        saturnRingApp.setTextureAttributes(saturnRingTexAttr);
+        //Planet Textures
+        saturnRingApp.setMaterial(planetMaterial);
+        
+                        //Pluto Texture
+        Appearance neptuneRingApp = new Appearance();
+        URL filenameneptuneRing = getClass().getClassLoader().getResource("images/neptuneRing.jpg");
+        TextureLoader loadNeptuneRing = new TextureLoader(filenameneptuneRing, this);
+        ImageComponent2D neptuneRingImage = loadNeptuneRing.getImage();
+        if(neptuneRingImage == null){
+            System.out.print("Cant find");
+        }
+        Texture2D neptuneRingTexture= new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, neptuneRingImage.getWidth(),
+                neptuneRingImage.getHeight());
+        neptuneRingTexture.setImage(0, neptuneRingImage);
+        neptuneRingTexture.setEnable(true);
+        neptuneRingApp.setTexture(neptuneRingTexture);
+        //Pluto Texture Attributes
+        TextureAttributes neptuneRingTexAttr = new TextureAttributes();
+        neptuneRingTexAttr.setTextureMode(TextureAttributes.MODULATE);
+        neptuneRingApp.setTextureAttributes(neptuneRingTexAttr);
+        //Planet Textures
+        neptuneRingApp.setMaterial(planetMaterial);
 
         //spheres of the planets
         Sphere sun = new Sphere(75f, primflags, 100);
@@ -360,6 +388,13 @@ public class ProjectSpace extends Applet {
         Sphere uranus = new Sphere(6f, primflags,100, uranusApp);
         Sphere neptune = new Sphere(5.8f, primflags,100, neptuneApp);
         Sphere pluto = new Sphere(.5f, primflags,100, plutoApp);
+        Shape3D saturnRing = new Torus(12, 15);
+        Shape3D neptuneRing = new Torus(5, 8);
+        
+        saturn.addChild(saturnRing);
+        saturnRing.setAppearance(saturnRingApp);
+        neptune.addChild(neptuneRing);
+        neptuneRing.setAppearance(neptuneRingApp);
 
         //Sun Material
         Material sunMaterial = new Material();
@@ -411,7 +446,7 @@ public class ProjectSpace extends Applet {
         tgJupiterDist.addChild(tgJupiterRotate);
         tgJupiterOrbit.addChild(tgJupiterDist);
         root.addChild(tgJupiterOrbit);
-        /*
+        
 
         //Mercury
         //tr.setTranslation(new Vector3f(75f,0f,0f)); //distance to center
@@ -517,44 +552,12 @@ public class ProjectSpace extends Applet {
         tgPlutoRotat.addChild(tgPluto);
         tgPlutoDist.addChild(tgPlutoRotat);
         tgPlutoOrbit.addChild(tgPlutoDist);
-        root.addChild(tgPlutoOrbit);*/
+        root.addChild(tgPlutoOrbit);
         
-            TransformGroup spinGroup = new TransformGroup();
-    TransformGroup zoomGroup = new TransformGroup();
-    TransformGroup moveGroup = new TransformGroup();
-    //Set the capabilities of the groups so that we can
-    //manipulate them
-    spinGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-    spinGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-    zoomGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-    zoomGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-    moveGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-    moveGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-    //Create and use the rotation utility
-    MouseRotate mouseSpin = new MouseRotate();
-    mouseSpin.setTransformGroup(spinGroup);
-    root.addChild(mouseSpin);
-    mouseSpin.setSchedulingBounds(boundingSphere);
-    //Create and use the zoom utility
-    MouseZoom mouseSize = new MouseZoom();
-    mouseSize.setTransformGroup(zoomGroup);
-    root.addChild(mouseSize);
-    mouseSize.setSchedulingBounds(boundingSphere);
-    //Create and use the translation utility
-    MouseTranslate mouseMove = new MouseTranslate();
-    mouseMove.setTransformGroup(moveGroup);
-    root.addChild(mouseMove);
-    mouseMove.setSchedulingBounds(boundingSphere);
-    //Put it all together
-    spinGroup.addChild(tgSun);
-    moveGroup.addChild(spinGroup);
-    zoomGroup.addChild(moveGroup);
-    root.addChild(zoomGroup);
-
 
         //light for the sun
         BoundingSphere bounds = new BoundingSphere(new Point3d(0,0,0),Double.MAX_VALUE);
-        Background background = new Background(0.0f, 0.0f, 0.0f);
+        Background background = new Background(1.0f, 1.0f, 1.0f);
         background.setApplicationBounds(bounds);
         root.addChild(background);
 
@@ -631,3 +634,4 @@ public class ProjectSpace extends Applet {
 
 
 
+   
