@@ -2,88 +2,93 @@ package projectSpace;
 
 import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.behaviors.keyboard.KeyNavigatorBehavior;
+import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
+import com.sun.j3d.utils.picking.PickCanvas;
+import com.sun.j3d.utils.picking.PickTool;
 import com.sun.j3d.utils.universe.PlatformGeometry;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import javax.media.j3d.*;
-import javax.vecmath.Color3f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
+import javax.vecmath.*;
 import java.applet.Applet;
 import java.awt.*;
 import java.net.URL;
 
-
 /**
  *
- * @author metal
+ * @author Roneil Boyce and David Tate
  */
+
 public class ProjectSpace extends Applet {
     private static boolean forward;
 
+
     int moonRotationTimeMs = 5000;
     int moonOrbitTimeMs = 10000;
-    int moonDistanceFromCenter = 5;
+    //int moonDistanceFromCenter = 5;
 
     int mercuryRotationTimeMs = 6000;
     int mercuryOrbitTimeMs = 10000;
-    int mercuryDistanceFromCenter = 175;
+    int mercuryDistanceFromCenter = 200;
 
     int venusRotationTimeMs = 6000;
     int venusOrbitTimeMs = 12000;
-    int venusDistanceFromCenter = 185;
+    int venusDistanceFromCenter = 210;
 
     int earthRotationTimeMs = 6000;
     int earthOrbitTimeMs = 15000;
-    int earthDistanceFromCenter = 195;
+    int earthDistanceFromCenter = 220;
 
     int marsRotationTimeMs = 6000;
     int marsOrbitTimeMs = 18000;
-    int marsDistanceFromCenter = 205;
+    int marsDistanceFromCenter = 230;
 
     int jupiterRotationTimeMs = 5000;
     int jupiterOrbitTimeMs = 22000;
-    int jupiterDistanceFromCenter = 240;
+    int jupiterDistanceFromCenter = 260;
 
     int saturnRotationTimeMs = 6000;
     int saturnOrbitTimeMs = 25000;
-    int saturnDistanceFromCenter = 295;
+    int saturnDistanceFromCenter = 320;
 
     int uranusRotationTimeMs = 6000;
     int uranusOrbitTimeMs = 28000;
-    int uranusDistanceFromCenter = 330;
+    int uranusDistanceFromCenter = 355;
 
     int neptuneRotationTimeMs = 6000;
     int neptuneOrbitTimeMs = 31000;
-    int neptuneDistanceFromCenter = 350;
+    int neptuneDistanceFromCenter = 375;
 
     int plutoRotationTimeMs = 6000;
     int plutoOrbitTimesMs = 33000;
-    int plutoDistanceFromCenter = 365;
+    int plutoDistanceFromCenter = 390;
 
     int sunRotationTimeMs = 10000;
-
-
 
     private static BoundingSphere boundingSphere = new BoundingSphere(new Point3d(0.0,0.0,0.0), Double.MAX_VALUE);
     private TransformGroup viewtrans = null;
 
     public static void main(String[] args){
-        new MainFrame(new ProjectSpace(), 1000,760);
+        new MainFrame(new ProjectSpace(), 800,600);
 
     }
+
+    PickCanvas pc;
+
     public void init(){
         //canvas
         GraphicsConfiguration gc = SimpleUniverse.getPreferredConfiguration();
         Canvas3D cv = new Canvas3D(gc);
         setLayout(new BorderLayout());
+
         add(cv, BorderLayout.CENTER);
         BranchGroup bg = createSceneGraph();
         bg.compile();
+        pc = new PickCanvas(cv, bg);
+        pc.setMode(PickTool.GEOMETRY);
         SimpleUniverse su = new SimpleUniverse(cv);
         su.getViewingPlatform().setNominalViewingTransform();
         su.addBranchGraph(bg);
@@ -102,19 +107,25 @@ public class ProjectSpace extends Applet {
         Transform3D t0 = new Transform3D();
         t0.setTranslation(new Vector3d(0,0,800));
         Transform3D t1 = new Transform3D();
-        t1.rotX(Math.toRadians(-15));
+        t1.rotX(Math.toRadians(0));
         viewPlatformTransform.mul(t1, t0);
         su.getViewer().getView().setBackClipDistance(1000);
-        su.getViewingPlatform().getViewPlatformTransform().setTransform(viewPlatformTransform);;
+        su.getViewingPlatform().getViewPlatformTransform().setTransform(viewPlatformTransform);
+
+        //mouse movement
+        OrbitBehavior orbit = new OrbitBehavior(cv);
+        orbit.setSchedulingBounds(boundingSphere);
+
+        orbit.setRotXFactor(2);//or any other value
+        orbit.setRotYFactor(0);
+        su.getViewingPlatform().setViewPlatformBehavior(orbit);
+
+
+        //su.addBranchGraph(bg);
     }
 
     private BranchGroup createSceneGraph(){
         BranchGroup root = new BranchGroup();
-
-        //image for planets
-//        ImageComponent2D image0 = new ImageComponent2D(); //suppose to import a picture of space
-//        Background background = new Background();//the background for the project
-//        background.setImage(image0);
 
         int primFlags = Primitive.GENERATE_NORMALS + Primitive.GENERATE_TEXTURE_COORDS;
 
@@ -369,6 +380,7 @@ public class ProjectSpace extends Applet {
         Sphere moon = new Sphere(.375f,primFlags,100, moonApp);
         Sphere mars = new Sphere(.75f, primFlags,100, marsApp);
         Sphere jupiter = new Sphere(16.5f, primFlags,100,jupiterApp);
+        jupiter.setPickable(true);
         Sphere saturn = new Sphere(13.5f, primFlags,100, saturnApp);
         Sphere uranus = new Sphere(6f, primFlags,100, uranusApp);
         Sphere neptune = new Sphere(5.8f, primFlags,100, neptuneApp);
@@ -413,6 +425,7 @@ public class ProjectSpace extends Applet {
         tgMercury.addChild(mercury);
         tgMercuryRotate.addChild(tgMercury);
         tgMercuryDist.addChild(tgMercuryRotate);
+        tgMercuryDist.addChild(planetText(6,"Mercury", -10, 3));
         tgMercuryOrbit.addChild(tgMercuryDist);
         root.addChild(tgMercuryOrbit);
 
@@ -466,10 +479,25 @@ public class ProjectSpace extends Applet {
         TransformGroup tgJupiterDist = createTranslatingTransformGroup(jupiterDistanceFromCenter);
         TransformGroup tgJupiterOrbit = createOrbitTransformGroup(jupiterOrbitTimeMs);
         tgJupiter.addChild(jupiter);
+        //tgJupiter.addChild(shape);
         tgJupiterRotate.addChild(tgJupiter);
         tgJupiterDist.addChild(tgJupiterRotate);
+        tgJupiterDist.addChild(planetText(25,"Jupiter", -35, 20));
         tgJupiterOrbit.addChild(tgJupiterDist);
         root.addChild(tgJupiterOrbit);
+
+
+        Font3D saturnFont = new Font3D(new Font("SansSerif", Font.PLAIN, 25),
+                new FontExtrusion());
+        Transform3D transformSaturnText = new Transform3D();
+        transformSaturnText.setRotation(new Matrix3d());
+        transformSaturnText.rotY(180);
+        Text3D saturnText = new Text3D(saturnFont, "Saturn");
+        saturnText.setPosition(new Point3f(-40,15,0));
+        //text.setCharacterSpacing(2);
+        TransformGroup saturnTextTG = new TransformGroup(transformSaturnText);
+        //Shape3D saturnTextShape = new Shape3D(saturnText, ap);
+        //saturnTextTG.addChild(saturnTextShape);
 
         //Saturn
         TransformGroup tgSaturn = new TransformGroup();//-.2f,.15f,.15f
@@ -479,6 +507,7 @@ public class ProjectSpace extends Applet {
         tgSaturn.addChild(saturn);
         tgSaturnRotate.addChild(tgSaturn);
         tgSaturnDist.addChild(tgSaturnRotate);
+        tgSaturnDist.addChild(planetText(25,"Saturn", -35, 20));
         tgSaturnOrbit.addChild(tgSaturnDist);
         root.addChild(tgSaturnOrbit);
 
@@ -521,7 +550,7 @@ public class ProjectSpace extends Applet {
         background.setApplicationBounds(bounds);
         root.addChild(background);
 
-        PointLight light = new PointLight();//please check over this
+        PointLight light = new PointLight();
         light.setColor(new Color3f(1.0f,0.898f,0.8f));
         light.setCollidable(true);
         light.setAttenuation(1.5f, 0.0f, 0.0f);
@@ -530,6 +559,24 @@ public class ProjectSpace extends Applet {
         root.addChild(light);
 
         return root;
+
+    }
+
+
+    public javax.media.j3d.TransformGroup planetText(int size, String name, int xPos, int yPos){
+        Appearance ap = new Appearance();
+        ap.setMaterial(new Material());
+        Font3D font = new Font3D(new Font("SansSerif", Font.PLAIN, size),
+                new FontExtrusion());
+        Transform3D transform3D = new Transform3D();
+        transform3D.setRotation(new Matrix3d());
+        transform3D.rotY(180);
+        Text3D text = new Text3D(font, name);
+        text.setPosition(new Point3f(xPos,yPos,0));
+        TransformGroup tg = new TransformGroup(transform3D);
+        Shape3D shape = new Shape3D(text, ap);
+        tg.addChild(shape);
+        return tg;
     }
 
     private static TransformGroup createRotationTransformGroup(
@@ -589,4 +636,5 @@ public class ProjectSpace extends Applet {
         ap.setTexture(texture);
         return background;
     }
+
 }
